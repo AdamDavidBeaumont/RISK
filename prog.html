@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+	const CANVAS_WIDTH = 500;
+	const CANVAS_HEIGHT = 250;
+	const POINT_RADIUS = 10;
+	const TWO_PIE = 2*Math.PI;
+	
+	var a = 1;			// dont be global
+	var colour = "red";
+	var c;
+	var count = 0;
+	var ctx;
+	var node = [];
+	var created = 1;
+		
+	window.onload = function() {
+		test();
+		c = document.getElementById("myCanvas");
+		ctx = c.getContext("2d");
+	}
+	
+	
+ 	function prog(event) {
+		ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+		drawNodes();
+		while (count < 10) {
+			node[a] = {};
+			set_co_ords();
+			created+=1;
+			drawNodes();
+			a+=1;
+			count+=1;
+		}	
+	
+	}
+
+	function selection() {
+		colour = "cyan";
+		prog();
+	}	
+
+	function test() {
+		console.log('DONE');
+
+	}
+
+	function set_co_ords() {
+		node[a].x =  Math.floor((Math.random() * 490) + POINT_RADIUS); //event.clientX - 10;   // make function randomCoord(width, height) returns [x,y];
+		node[a].y =  Math.floor((Math.random() * 240) + POINT_RADIUS); //event.clientY - 11;
+	}
+
+	function drawNodes() {
+
+		for(i = 1; i < created; i++) {
+			drawNode(node[i].x, node[i].y);
+		}	
+	}
+
+	function drawNode(x, y) {
+		ctx.beginPath();
+		ctx.arc(x, y, POINT_RADIUS, 0, TWO_PIE);
+		ctx.strokeStyle = colour;
+		ctx.stroke();
+		ctx.fillStyle = "Black";
+		ctx.fill();
+	}
+
+</script>
+</head> 
+<body>
+	<canvas id="myCanvas" width="500" height="250" style="border:3px solid #d3d3d3;"></canvas>
+	<button onclick="prog(event)">Generate</button>
+	<button onclick="selection()">change colour</button>
+</body>
+</html>
+
