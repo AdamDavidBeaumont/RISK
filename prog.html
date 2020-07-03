@@ -1,78 +1,91 @@
 <!DOCTYPE html>
+<script src="include.js"></script>
 <html>
 <head>
 <script>
+	const NODES_COUNT =  2;
 	const CANVAS_WIDTH = 500;
 	const CANVAS_HEIGHT = 250;
 	const POINT_RADIUS = 10;
 	const TWO_PIE = 2*Math.PI;
 	
-	var a = 1;			// dont be global
-	var colour = "red";
-	var c;
-	var count = 0;
+	var a = 1;
+	var b = 1;
 	var ctx;
+	var count = 0;
 	var node = [];
 	var created = 1;
 		
 	window.onload = function() {
-		test();
+		var c;
 		c = document.getElementById("myCanvas");
 		ctx = c.getContext("2d");
 	}
 	
 	
- 	function prog(event) {
-		ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-		drawNodes();
-		while (count < 10) {
+ 	function makeNodes(event) {
+		drawNodes(ctx);
+		while (count < NODES_COUNT) {
 			node[a] = {};
-			set_co_ords();
+			node[a].str = 1;
+			setCo_ords();
 			created+=1;
-			drawNodes();
+			drawNodes(ctx);
 			a+=1;
 			count+=1;
 		}	
 	
 	}
 
-	function selection() {
-		colour = "cyan";
-		prog();
-	}	
-
-	function test() {
-		console.log('DONE');
-
-	}
-
-	function set_co_ords() {
-		node[a].x =  Math.floor((Math.random() * 490) + POINT_RADIUS); //event.clientX - 10;   // make function randomCoord(width, height) returns [x,y];
-		node[a].y =  Math.floor((Math.random() * 240) + POINT_RADIUS); //event.clientY - 11;
+	function setCo_ords() {
+		node[a].x =  Math.floor((Math.random() * CANVAS_WIDTH) + POINT_RADIUS);   // make function randomCoord(width, height) returns [x,y];
+		node[a].y =  Math.floor((Math.random() * CANVAS_HEIGHT) + POINT_RADIUS);
 	}
 
 	function drawNodes() {
-
-		for(i = 1; i < created; i++) {
-			drawNode(node[i].x, node[i].y);
-		}	
+		var intersect = false;
+		ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+		for (i = 1; i < created && intersect == false; i++) {
+			var intersect = false;
+			if (intersect == false) {
+				intersect = checkIntersect(i);
+				console.log(intersect);
+			}
+			if (intersect == true) {
+				drawNode(node[i].x, node[i].y, ctx, "cyan");
+				node[i].str+=1;
+				console.log(node[i].str);
+				//if (b != i) {
+					//battle(node[b].str, node[i].str);
+					//console.log(node[b].str);
+					//battle(node[i].str, node[b].str);
+					//console.log(node[i].str);
+				//}
+				b = i;
+			}
+			if (intersect == false) {
+				drawNode(node[i].x, node[i].y, "red");
+			}
+		}
 	}
 
-	function drawNode(x, y) {
+	function drawNode(x, y, colour) {
 		ctx.beginPath();
-		ctx.arc(x, y, POINT_RADIUS, 0, TWO_PIE);
+		ctx.arc(x - 11, y - 10, POINT_RADIUS, 0, TWO_PIE);
 		ctx.strokeStyle = colour;
 		ctx.stroke();
 		ctx.fillStyle = "Black";
 		ctx.fill();
 	}
 
+	function battle(element_1, element_2) {			//Subtracts element_2 from element_1
+		node[element_1].str-=node[element_2].str;
+	}
+
 </script>
 </head> 
 <body>
-	<canvas id="myCanvas" width="500" height="250" style="border:3px solid #d3d3d3;"></canvas>
-	<button onclick="prog(event)">Generate</button>
-	<button onclick="selection()">change colour</button>
+	<canvas id="myCanvas" width="500" height="250" onclick="makeNodes(event)" style="border:3px solid #d3d3d3;"></canvas>
+	<button onclick="makeNodes(event)">Generate</button>
 </body>
 </html>
-
